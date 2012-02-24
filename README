@@ -1,0 +1,23 @@
+PACKAGE
+
+package workers
+    import "workers"
+
+    The workers package allows launching a function as many goroutines and
+    keeping those in separate threads. Given a CPU intensive worker like
+    function it would be good to have many workers concurrently processing
+    without having each other competing for the same resources. Basically,
+    having one worker goroutine per CPU and each goroutine in a separate
+    thread would do it.
+
+FUNCTIONS
+
+func Distribute(num_threads int, wg *sync.WaitGroup, worker func())
+    Distribute worker into `num_threads` goroutines in separate threads. All
+    new goroutines will belong to a the waitgroup
+
+func Fill(worker func()) *sync.WaitGroup
+    Fill will spawn as many worker goroutines as GOMAXPROCS and keep them in
+    different threads
+
+

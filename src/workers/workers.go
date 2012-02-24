@@ -1,3 +1,5 @@
+// The workers package allows launching a function as many goroutines and keeping those in separate threads.
+// Given a CPU intensive worker like function it would be good to have many workers concurrently processing without having each other competing for the same resources. Basically, having one worker goroutine per CPU and each goroutine in a separate thread would do it.
 package workers
 
 import (
@@ -40,6 +42,7 @@ func find_unused_thread(tries int, wg *sync.WaitGroup, reg *pidRegistry, worker 
 	wg.Done()
 }
 
+//Distribute worker into `num_threads` goroutines in separate threads. All new goroutines will belong to a the waitgroup
 func Distribute(num_threads int, wg *sync.WaitGroup, worker func()) {
 	reg := &pidRegistry{pids: make(map[int]bool, num_threads)}
 
@@ -49,6 +52,7 @@ func Distribute(num_threads int, wg *sync.WaitGroup, worker func()) {
 	}
 }
 
+//Fill will spawn as many worker goroutines as GOMAXPROCS and keep them in different threads
 func Fill(worker func()) *sync.WaitGroup {
 	wg := new(sync.WaitGroup)
 	procs := runtime.GOMAXPROCS(0)
